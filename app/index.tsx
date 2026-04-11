@@ -5,6 +5,17 @@ import { useEffect, useState } from "react";
 import { FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+// colour palette 
+const COLORS = {
+  primary: "#748E81",   
+  secondary: "#1D352B", 
+  background: "#F9F9F9", 
+  white: "#FFFFFF",
+  black: "#000000",
+  text: "#2C3435",       
+  border: "#EEEEEE",
+};
+
 type ToDoType = {
   id: number;
   title: string;
@@ -109,7 +120,7 @@ export default function Index() {
       {/* menu section */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => alert("Under construction!")}>
-          <Ionicons name="menu" size={28} color={"#2C3435"} />
+          <Ionicons name="menu" size={28} color={COLORS.text} />
         </TouchableOpacity>
         <TouchableOpacity>
           <Image source={require("../assets/user.png")} style={styles.avatar} />
@@ -118,28 +129,53 @@ export default function Index() {
 
       {/* search bar section */}
       <View style={styles.searchBar}>
-        <Ionicons name="search" size={20} color={"#748E81"} />
+        <Ionicons name="search" size={20} color={COLORS.primary} />
         <TextInput
           placeholder="Search"
-          placeholderTextColor="#748E81"
+          placeholderTextColor={COLORS.primary}
           value={searchQuery}
           onChangeText={(text) => setSearchQuery(text)}
           style={styles.searchInput}
           clearButtonMode="always"
         />
       </View>
+      
+      {/* Empty State Section */}
+      {todos.length === 0 && (
+        <View style={styles.emptyContainer}>
+          <Ionicons 
+          name="clipboard-outline" 
+          size={80} 
+          color={COLORS.primary} 
+          style={styles.emptyIcon} 
+          />
+          <Text style={styles.emptyText}>All clear!</Text>
+          <Text style={styles.emptySubText}>Add a new task below to get started.</Text>
+        </View>
+      )}
 
       {/* todo list */}
-      <FlatList data={[...todos].reverse()} keyExtractor={(item) => item.id.toString()} renderItem={({ item }) => (
+      <FlatList 
+      data={[...todos].reverse()} 
+      keyExtractor={(item) => item.id.toString()} 
+      renderItem={({ item }) => (
           <ToDoItem  todo={item} deleteTodo={deleteTodo}  handleDone={handleDone} />
         )}
       />
 
       {/* add new todo */}
-      <KeyboardAvoidingView style={styles.footer} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={10} >
-        <TextInput  placeholder="Task name" placeholderTextColor="#748E81" value={todoText} onChangeText={(text) => setTodoText(text)} style={styles.newTodoInput} autoCorrect={false} />
+      <KeyboardAvoidingView 
+      style={styles.footer} 
+      behavior={Platform.OS === "ios" ? "padding" : "height"} 
+      keyboardVerticalOffset={10} 
+      >
+        <TextInput  
+        placeholder="Task name" 
+        placeholderTextColor={COLORS.primary} 
+        value={todoText} onChangeText={(text) => setTodoText(text)} 
+        style={styles.newTodoInput} autoCorrect={false} />
         <TouchableOpacity style={styles.addButton} onPress={() => addTodo()}>
-          <Ionicons name="add" size={34} color={"#FFF"} />
+          <Ionicons name="add" size={34} color={COLORS.white} />
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -158,13 +194,16 @@ const ToDoItem = ({
 }) => (
   <View style={styles.todoContainer}>
     <View style={styles.todoInfoContainer}>
-      <Checkbox value={todo.isDone} onValueChange={() => handleDone(todo.id)} color={todo.isDone ? "#748E81" : undefined} />
+      <Checkbox 
+      value={todo.isDone} 
+      onValueChange={() => handleDone(todo.id)} 
+      color={todo.isDone ? COLORS.primary : undefined} />
       <Text style={[styles.todoText, todo.isDone && styles.strikeThrough]}>
         {todo.title}
       </Text>
     </View>
     <TouchableOpacity onPress={() => { deleteTodo(todo.id) }}>
-      <Ionicons name="trash-outline" size={22} color={"#748E81"} />
+      <Ionicons name="trash-outline" size={22} color={COLORS.primary} />
     </TouchableOpacity>
   </View>
 );
@@ -174,7 +213,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: "#F9F9F9", 
+    backgroundColor: COLORS.background, 
   },
   header: {
     flexDirection: "row",
@@ -187,11 +226,11 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "#748E81",
+    borderColor: COLORS.primary,
   },
   searchBar: {
     flexDirection: "row",
-    backgroundColor: "#FFF",
+    backgroundColor: COLORS.white,
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: Platform.OS === 'ios' ? 14 : 8,
@@ -199,21 +238,21 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 25,
     borderWidth: 1,
-    borderColor: "#EEE",
+    borderColor: COLORS.border,
   },
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: "#2C3435",
+    color: COLORS.text,
   },
   todoContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#FFF",
+    backgroundColor: COLORS.white,
     padding: 18,
     borderRadius: 12,
     marginBottom: 12,
-    shadowColor: "#000",
+    shadowColor: COLORS.black,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
@@ -226,12 +265,12 @@ const styles = StyleSheet.create({
   },
   todoText: {
     fontSize: 16,
-    color: "#2C3435",
+    color: COLORS.text,
     fontWeight: "500",
   },
   strikeThrough: {
     textDecorationLine: "line-through",
-    color: "#748E81",
+    color: COLORS.primary,
   },
   footer: {
     flexDirection: "row",
@@ -242,18 +281,39 @@ const styles = StyleSheet.create({
   },
   newTodoInput: {
     flex: 1,
-    backgroundColor: "#FFF",
+    backgroundColor: COLORS.white,
     padding: 16,
     borderRadius: 12,
     fontSize: 16,
-    color: "#2C3435",
+    color: COLORS.text,
     borderWidth: 1,
-    borderColor: "#EEE",
+    borderColor: COLORS.border,
   },
   addButton: {
-    backgroundColor: "#748E81", 
+    backgroundColor: COLORS.primary, 
     padding: 10,
     borderRadius: 12,
     marginLeft: 15,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50, // Ger lite luft från sökfältet
+  },
+  emptyIcon: {
+    marginBottom: 20,
+    opacity: 0.8,
+  },
+  emptyText: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: COLORS.text,
+    marginBottom: 8,
+  },
+  emptySubText: {
+    fontSize: 16,
+    color: COLORS.primary,
+    textAlign: 'center',
   },
 });
